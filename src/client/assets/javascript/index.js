@@ -2,6 +2,7 @@
 
 // The store will hold all information needed globally
 let store = {
+	tracks: undefined,
 	track_id: undefined,
 	player_id: undefined,
 	race_id: undefined,
@@ -20,6 +21,7 @@ async function onPageLoad() {
 	try {
 		getTracks()
 			.then(tracks => {
+				store.tracks = tracks;				
 				const html = renderTrackCards(tracks);			
 				renderAt('#tracks', html);
 			});
@@ -57,11 +59,18 @@ function setupClickHandlers() {
 		}
 		// Submit create race form
 		if (target.matches('#submit-create-race')) {
-			event.preventDefault();
-			handleCreateRace();
+			// first check that a racer and a track are selected
+			if (store.player_id === undefined || store.track_id === undefined) {
+				alert('You need to pick a track and a racer!');				
+			// start the race if a racer and a track are selected!
+			} else {
+				event.preventDefault();
+				handleCreateRace();
+			}
+			
 		}
 		// Handle acceleration click
-		if (target.matches('#gas-peddle')) {
+		if (target.matches('#gas-pedal')) {
 			handleAccelerate(target);
 		}
 	}, false);
@@ -121,7 +130,7 @@ function runRace(raceID) {
 					}
 				})
 		} catch (error) {
-			console.log(`There was a problem here: ${error}`);
+			console.log(`There was a problem here! ${error}`);
 		}	
 		}, 500);
 	});
@@ -148,7 +157,7 @@ async function runCountdown() {
 			const tick = setInterval(tock, 1000); 
 		});
 	} catch(error) {
-		console.log(error);
+		console.log(`Sad times, it's an error! ${error}`);
 	}
 }
 
@@ -244,6 +253,7 @@ function renderTrackCard(track) {
 	return `
 		<li id="${id}" class="card track">
 			<h3>${name}</h3>
+			
 		</li>
 	`;
 }
@@ -258,7 +268,7 @@ function renderCountdown(count) {
 function renderRaceStartView(track, racers) {
 	return `
 		<header>
-			<h1>Race: ${track.name}</h1>
+			<h1>Race: ${store.tracks.find(x => x.id === track).name}</h1>
 		</header>
 		<main id="two-columns">
 			<section id="leaderBoard">
@@ -268,7 +278,7 @@ function renderRaceStartView(track, racers) {
 			<section id="accelerate">
 				<h2>Directions</h2>
 				<p>Click the button as fast as you can to make your racer go faster!</p>
-				<button id="gas-peddle">Click Me To Win!</button>
+				<button id="gas-pedal">Accelerate!</button>
 			</section>
 		</main>
 		<footer></footer>
@@ -284,7 +294,7 @@ function resultsView(positions) {
 		</header>
 		<main>
 			${raceProgress(positions)}
-			<a href="/race">Start a new race</a>
+			<a class="button" href="/race">Start a new race</a>
 		</main>
 	`;
 }
@@ -293,29 +303,33 @@ function raceProgress(positions) {
 	// userPlayer is the racer in positions var with the same id as the player_id in the store.
 	let userPlayer = positions.find(e => e.id === store.player_id);
 	// add "(you)" next to the userPlayer's name when rendering their progress card.
-	userPlayer.driver_name += " (you)";
+	userPlayer.driver_name += " (you)";	
 
 	// sort the positions
 	positions = positions.sort((a, b) => (a.segment > b.segment) ? -1 : 1);
 	let count = 1;
 
 	// create a block of HTML code (string) of table rows showing racer positions, stored in "results" variable.
+
+	
 	const results = positions.map(p => {
 		return `
 			<tr>
 				<td>
-					<h3>${count++} - ${p.driver_name}</h3>
+					<h3 ${'class="leader-card"'}>${count++} - ${p.driver_name}</h3>
 				</td>
 			</tr>
 		`;
 	});
 
 	// stick the block of HTML code in the middle of the leaderboard and return it.
+	// console.log(results.join(''));
+	
 	return `
 		<main>
-			<h3>Leaderboard</h3>
+			<h2>Leaderboard</h2>
 			<section id="leaderBoard">
-				${results}
+				${results.join('')}
 			</section>
 		</main>
 	`;

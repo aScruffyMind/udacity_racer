@@ -31,6 +31,11 @@ header {
   align-items: center;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  margin: auto;
+  text-align: center;
+}
+
 h1 {
   color: white;
   text-shadow: 3px 2px hsl(0, 2%, 51%);
@@ -44,6 +49,7 @@ h2 {
   font-size: 30px;
   line-height: 1.3;
   padding: 10px 0;
+
 }
 
 h3 {
@@ -62,6 +68,7 @@ p {
   color: black;
   font-weight: normal;
   font-size: 18px;
+  padding: 15px auto;
 }
 
 .button {
@@ -74,10 +81,25 @@ p {
   color: white;
   font-size: 20px;
   text-transform: uppercase;
-  margin: 20px 0;
+  margin: 20px auto;
   display: block;
   text-align: center;
   text-decoration: none;
+}
+
+.card-list {
+  justify-content: center;
+}
+
+.leader-card {
+text-align: left;
+}
+
+.title {
+  padding-top: 20px !important;
+  font-weight: bold;
+  text-decoration: underline;
+  color: green;
 }
 
 main {

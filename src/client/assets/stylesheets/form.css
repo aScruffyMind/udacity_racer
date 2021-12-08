@@ -1,6 +1,7 @@
 form ul {
     display: flex;
-    padding: 20px;
+    padding: 5px 20px;
+    margin: auto;
 }
 
 form li {
